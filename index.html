@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="당신의 기분을 말해주세요. AI 시인이 위로의 시를 지어드립니다." />
+  <meta name="theme-color" content="#0a0e1a" />
+  <meta property="og:title" content="Mood Poet — 오늘, 당신을 위한 시" />
+  <meta property="og:description" content="기분을 입력하면 위로의 시를 지어주는 감성 AI 시인" />
+  <meta property="og:type" content="website" />
+  <title>Mood Poet — 오늘, 당신을 위한 시</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Noto Serif KR"', 'Georgia', 'serif'],
+          },
+          colors: {
+            night: {
+              900: '#0a0e1a',
+              800: '#0f1525',
+              700: '#151d33',
+              600: '#1b2540',
+            },
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Google Fonts: Noto Serif KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: 'Noto Serif KR', Georgia, serif;
+      background: linear-gradient(160deg, #0a0e1a 0%, #0f1525 40%, #0a0e1a 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── 반짝이는 별 ── */
+    .stars-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: #ffffff;
+      border-radius: 50%;
+      animation: twinkle var(--duration) ease-in-out infinite;
+      opacity: 0;
+    }
+    .star.large {
+      width: 3px;
+      height: 3px;
+      box-shadow: 0 0 4px 1px rgba(180, 200, 255, 0.4);
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0; transform: scale(0.8); }
+      50% { opacity: var(--peak-opacity); transform: scale(1.2); }
+    }
+
+    /* ── 유성 ── */
+    .shooting-star {
+      position: absolute;
+      width: 80px;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.8), transparent);
+      opacity: 0;
+      animation: shoot 3s ease-out infinite;
+    }
+    @keyframes shoot {
+      0% { opacity: 0; transform: translateX(0) translateY(0) rotate(-35deg); }
+      5% { opacity: 1; }
+      30% { opacity: 0; transform: translateX(300px) translateY(200px) rotate(-35deg); }
+      100% { opacity: 0; }
+    }
+
+    /* ── 타자기 커서 ── */
+    .cursor-blink::after {
+      content: '│';
+      animation: blink 0.7s step-end infinite;
+      color: #a0b4d0;
+    }
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    /* ── 입력 textarea ── */
+    textarea {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    textarea:focus {
+      border-color: rgba(160, 180, 220, 0.3);
+      box-shadow: 0 0 20px rgba(100, 140, 200, 0.08);
+      outline: none;
+    }
+    textarea::placeholder {
+      color: rgba(255, 255, 255, 0.25);
+    }
+
+    /* ── 버튼 ── */
+    .btn-generate {
+      background: linear-gradient(135deg, rgba(80, 110, 170, 0.25), rgba(60, 90, 150, 0.15));
+      border: 1px solid rgba(140, 170, 220, 0.2);
+      transition: all 0.3s;
+    }
+    .btn-generate:hover {
+      background: linear-gradient(135deg, rgba(80, 110, 170, 0.4), rgba(60, 90, 150, 0.25));
+      border-color: rgba(140, 170, 220, 0.4);
+      box-shadow: 0 0 25px rgba(80, 120, 200, 0.12);
+    }
+    .btn-generate:active {
+      transform: scale(0.97);
+    }
+    .btn-generate:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* ── 시 출력 카드 ── */
+    .poem-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(8px);
+    }
+
+    /* ── 페이드인 ── */
+    .fade-in {
+      animation: fadeIn 0.6s ease-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── 스크롤바 ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+    /* ── 카테고리 태그 ── */
+    .category-tag {
+      background: rgba(100, 140, 200, 0.12);
+      border: 1px solid rgba(100, 140, 200, 0.2);
+    }
+  </style>
+</head>
+
+<body class="text-gray-300 antialiased">
+
+  <!-- ★ 배경 별 -->
+  <div class="stars-container" id="starsContainer" aria-hidden="true"></div>
+
+  <!-- ★ 메인 콘텐츠 -->
+  <main class="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-12 sm:py-16">
+
+    <!-- 헤더 -->
+    <header class="text-center mb-10 sm:mb-14 fade-in">
+      <div class="flex items-center justify-center gap-2 mb-4">
+        <i data-lucide="moon" class="w-6 h-6 text-indigo-300/60"></i>
+        <span class="text-xs tracking-[0.3em] uppercase text-indigo-300/50 font-light">Mood Poet</span>
+        <i data-lucide="stars" class="w-6 h-6 text-indigo-300/60"></i>
+      </div>
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-light text-gray-100 leading-snug tracking-tight">
+        오늘, 당신을 위한 시
+      </h1>
+      <p class="mt-4 text-sm sm:text-base text-gray-400/70 font-light max-w-md mx-auto leading-relaxed">
+        지금 느끼는 감정을 자유롭게 적어주세요.<br class="hidden sm:block" />
+        밤하늘 아래, 당신만을 위한 시 한 편을 지어드릴게요.
+      </p>
+    </header>
+
+    <!-- 입력 영역 -->
+    <section class="w-full max-w-xl mb-8 fade-in" style="animation-delay: 0.15s;" aria-label="감정 입력">
+      <label for="moodInput" class="sr-only">당신의 기분을 적어주세요</label>
+      <textarea
+        id="moodInput"
+        rows="4"
+        maxlength="300"
+        class="w-full rounded-2xl px-6 py-5 text-base sm:text-lg text-gray-200 font-light resize-none leading-relaxed font-serif placeholder:font-light"
+        placeholder="예) 회사에서 많이 지쳤어요…"
+      ></textarea>
+      <div class="flex items-center justify-between mt-3 px-1">
+        <span id="charCount" class="text-xs text-gray-500/60">0 / 300</span>
+        <button
+          id="generateBtn"
+          class="btn-generate rounded-full px-7 py-2.5 text-sm text-gray-200 font-light tracking-wide flex items-center gap-2"
+          type="button"
+        >
+          <i data-lucide="feather" class="w-4 h-4"></i>
+          시를 지어주세요
+        </button>
+      </div>
+    </section>
+
+    <!-- 시 출력 영역 -->
+    <section id="poemSection" class="w-full max-w-xl hidden" aria-label="생성된 시" aria-live="polite">
+      <div class="poem-card rounded-2xl p-8 sm:p-10">
+        <div class="flex items-center gap-2 mb-6">
+          <i data-lucide="quote" class="w-4 h-4 text-indigo-300/40"></i>
+          <span id="categoryLabel" class="category-tag text-xs px-3 py-1 rounded-full text-indigo-200/70"></span>
+        </div>
+        <div id="poemOutput" class="text-lg sm:text-xl text-gray-200/90 font-light leading-[2.2] whitespace-pre-line min-h-[120px]"></div>
+        <div class="flex items-center justify-between mt-8 pt-5 border-t border-white/5">
+          <span class="text-xs text-gray-500/50 italic">— Mood Poet</span>
+          <div class="flex gap-2">
+            <button id="copyBtn" class="text-gray-500/50 hover:text-gray-300 transition p-2 rounded-lg hover:bg-white/5" title="복사하기" type="button">
+              <i data-lucide="copy" class="w-4 h-4"></i>
+            </button>
+            <button id="retryBtn" class="text-gray-500/50 hover:text-gray-300 transition p-2 rounded-lg hover:bg-white/5" title="다시 쓰기" type="button">
+              <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer class="mt-16 text-center text-xs text-gray-600/40 fade-in" style="animation-delay: 0.3s;">
+      <p>밤하늘 아래 당신 곁의 작은 시인</p>
+    </footer>
+  </main>
+
+<script>
+// ═══════════════════════════════════════════════════
+//  Phase 1: Mood Poet — Fake AI Engine
+// ═══════════════════════════════════════════════════
+
+// ── 1. 시 구절 데이터 (카테고리별 서론/본론/결론) ──
+const poemData = {
+
+  // ────────────────────────────
+  //  직장 / 진로
+  // ────────────────────────────
+  work: {
+    label: '직장 · 진로',
+    keywords: ['회사','직장','상사','팀장','부장','야근','출근','퇴근','퇴사','이직','취업','취준','면접','해고','월급','돈','연봉','성과','실적','프로젝트','업무','일','노동','사업','알바','인턴','승진','불합격','스펙','자소서'],
+    intro: [
+      '빌딩 숲 사이, 길을 잃은 바람 같은 하루였군요.',
+      '오늘도 무거운 가방보다 더 무거운 마음을 안고 걸었겠지요.',
+      '형광등 아래 숨 쉬는 것조차 버거웠을 당신의 하루,',
+      '나를 갈아 넣어도 채워지지 않는 하루 앞에 서 있는 당신에게.',
+      '넥타이가 목을 조이듯, 숨 막히는 하루를 견뎌냈군요.',
+      '퇴근길 지하철 창에 비친 당신의 얼굴이 낯설게 느껴졌을 거예요.',
+      '세상은 당신에게 끝없이 증명하라고 말하지만,',
+      '오늘 하루도 당신은 버텼고, 그것만으로 충분합니다.',
+    ],
+    body: [
+      '날 선 말들이 비수처럼 꽂혀\n마음을 어지럽혔겠지만,\n당신의 잘못이 아닙니다.',
+      '성과라는 숫자 뒤에 가려진\n당신의 수고를 아는 사람이 분명 있어요.',
+      '세상이 정한 속도에\n맞추지 못한다고 느끼더라도\n당신의 걸음에는 당신만의 리듬이 있어요.',
+      '반복되는 날들 속에서도\n조용히 빛나는 순간들이 있었을 거예요.\n다만 지금은 그게 보이지 않을 뿐.',
+      '무능하다 느끼는 그 감정 뒤에는\n잘하고 싶은 마음이 있다는 뜻이에요.',
+      '당신이 흘린 땀은\n누가 알아주지 않아도\n시간이 기억합니다.',
+      '지금은 터널 속 같지만\n어둠이 깊을수록\n출구의 빛은 더 선명해져요.',
+    ],
+    conclusion: [
+      '부디 무너지지 마세요.\n당신은 그 빌딩보다 높게 자랄 나무니까요.',
+      '내일의 당신은\n오늘보다 조금 더 가벼운 발걸음으로\n출근할 수 있기를.',
+      '지금 이 밤이 지나면\n새벽은 반드시 옵니다.\n조금만, 조금만 더.',
+      '퇴근길 불어오는 바람이\n오늘의 상처를 살짝 어루만져 주기를.',
+      '당신이 걸어온 길 위에\n이미 수많은 꽃이 피어나고 있어요.',
+      '오늘 하루를 버틴 당신에게\n별 하나를 띄워 드릴게요.',
+    ],
+  },
+
+  // ────────────────────────────
+  //  사랑 / 이별
+  // ────────────────────────────
+  love: {
+    label: '사랑 · 이별',
+    keywords: ['사랑','이별','헤어','연인','남자친구','여자친구','남친','여친','짝사랑','그리움','보고싶','연애','결혼','커플','소개팅','고백','차여','차이','그사람','미련','잊을','잊지','그리워','좋아하','데이트','혼자','외로','외롭','쓸쓸'],
+    intro: [
+      '한때 온 세상이었던 사람이\n이제는 먼 별이 되어버렸군요.',
+      '아직도 골목을 돌 때마다\n그 사람의 잔상이 겹치나요.',
+      '사랑이란 글자가\n이렇게까지 아플 수 있다는 걸\n당신은 지금 온몸으로 배우고 있군요.',
+      '함께였던 시간의 무게가\n홀로 남은 어깨를 짓누르고 있겠지요.',
+      '익숙한 향기가 바람에 실려올 때마다\n숨이 멎는 듯한 당신의 밤.',
+      '그 사람의 이름이\n아직도 입술 끝에 머물러 있나요.',
+      '사랑했던 기억이\n가시가 되어 가슴에 박혀 있는 밤이군요.',
+    ],
+    body: [
+      '울고 싶을 때는 울어도 됩니다.\n눈물은 마음의 빗물이니까요.\n젖은 뒤에야 맑은 하늘이 옵니다.',
+      '그 사람이 전부라고 느꼈겠지만\n세상에는 아직 당신이 만나지 못한\n따뜻한 손길이 남아 있어요.',
+      '이별은 끝이 아니라\n당신이라는 이야기의\n새 장이 펼쳐지는 순간입니다.',
+      '지워지지 않는 기억은\n무리하게 지우지 않아도 돼요.\n시간이 천천히 빛을 바래게 해줄 거예요.',
+      '사랑했기에 아픈 거예요.\n그 아픔은 당신이\n진심이었다는 증거입니다.',
+      '당신의 사랑은 틀리지 않았어요.\n다만 계절이 맞지 않았을 뿐.',
+      '그리움이 파도처럼 밀려와도\n당신은 가라앉지 않을 거예요.\n당신은 바다보다 깊으니까요.',
+    ],
+    conclusion: [
+      '언젠가 이 밤도 추억이 되어\n미소 지을 수 있는 날이 올 거예요.',
+      '다음 사랑은 당신을\n울리지 않을 거예요.\n약속할게요, 계절이.',
+      '그리움의 끝에서\n더 단단해진 당신을 만나게 될 거예요.',
+      '별이 빛나려면 어두운 밤이 필요하듯,\n당신의 사랑도 다시 빛날 거예요.',
+      '오늘 밤 흘린 눈물 위에\n내일은 무지개가 걸릴 거예요.',
+      '당신의 다음 봄은\n지금 이 겨울이 만들고 있답니다.',
+    ],
+  },
+
+  // ────────────────────────────
+  //  인간관계
+  // ────────────────────────────
+  relationship: {
+    label: '인간관계',
+    keywords: ['친구','우정','배신','뒷담','거짓','거짓말','인간관계','사람','동료','가족','부모','엄마','아빠','형','누나','동생','싸움','다툼','오해','미움','질투','비교','따돌','왕따','눈치','말','상처','무시','관계'],
+    intro: [
+      '사람 사이에서 받은 상처가\n가장 깊은 법이지요.',
+      '믿었던 사람에게서 온 말 한마디가\n세상 전부를 흔들어 놓았군요.',
+      '웃으며 건넨 말 뒤에 숨은 가시가\n당신의 마음을 긁어냈겠지요.',
+      '관계라는 미로 속에서\n출구를 찾지 못해 지쳐있는 당신에게.',
+      '혼자가 편하다고 느끼면서도\n외롭다고 느끼는 당신의 마음, 압니다.',
+      '누군가의 한마디에\n하루가 무너져 내린 경험,\n당신만 겪는 일이 아니에요.',
+    ],
+    body: [
+      '모든 사람에게\n좋은 사람일 필요는 없어요.\n당신이 먼저 당신에게 좋은 사람이 되세요.',
+      '상처를 준 사람의 말은\n당신의 가치를 정하지 못합니다.\n그건 그 사람의 그림자일 뿐이에요.',
+      '떠나는 사람은 잡지 않아도 돼요.\n당신 곁에 남는 사람이\n진짜 당신의 사람입니다.',
+      '눈치를 보느라 지친 마음에게\n잠시 쉬어도 된다고 말해주세요.',
+      '당신이 맞추려 애쓴 만큼\n세상도 당신에게 맞춰야 해요.\n관계는 일방통행이 아니니까요.',
+      '혼자인 시간이\n외로움이 아닌 회복이 되는 날이\n반드시 올 거예요.',
+    ],
+    conclusion: [
+      '진심은 반드시 진심을 알아보는\n사람을 만나게 됩니다.',
+      '상처 위에 피어난 꽃은\n더 단단하고 아름답습니다.\n당신처럼요.',
+      '오늘의 외로움이\n내일 더 깊은 만남의 씨앗이 될 거예요.',
+      '당신의 따뜻함을 알아볼 사람이\n지금 이 순간에도\n당신을 향해 걸어오고 있어요.',
+      '사람에게서 받은 상처는\n결국 사람에게서 치유됩니다.\n그 사람이 곧 나타날 거예요.',
+    ],
+  },
+
+  // ────────────────────────────
+  //  무기력 / 우울
+  // ────────────────────────────
+  depression: {
+    label: '무기력 · 우울',
+    keywords: ['우울','슬프','슬퍼','힘들','힘든','지치','지친','피곤','무기력','의욕','의미','살기','죽고','죽겠','죽을','자살','포기','절망','불안','걱정','잠','못자','불면','눈물','울고','미래','답없','답이없','모르겠','끝','아무것도','존재','가치','쓸모','한심','바보','멍청','싫어','싫다','두렵','두려','무섭','공허','허무','허탈','번아웃','지겹'],
+    intro: [
+      '아무것도 하기 싫은 날이 있지요.\n그런 날은 숨을 쉬는 것조차 용기입니다.',
+      '마음속에 짙은 안개가 끼어\n앞이 보이지 않는 밤이군요.',
+      '세상의 소리가 멀어지고\n나만 멈춰있는 것 같은\n그런 하루였나요.',
+      '이불 속이 세상에서 가장\n안전한 곳처럼 느껴지는 밤,\n당신의 마음에 살며시 노크합니다.',
+      '숨을 쉬는 것만으로도\n온 힘을 다하고 있는 당신에게.',
+      '가라앉는 마음을\n애써 건져 올리지 않아도 돼요.\n잠시 바닥에 머물러도 괜찮아요.',
+      '아무도 모르게 혼자 삼킨\n눈물의 무게를 알고 있어요.',
+    ],
+    body: [
+      '지금 느끼는 감정은\n당신의 잘못이 아닙니다.\n마음도 감기에 걸릴 수 있어요.',
+      '괜찮지 않아도 괜찮습니다.\n억지로 웃지 않아도 됩니다.\n있는 그대로의 당신이면 충분해요.',
+      '아무것도 아닌 것 같다는 생각이 들 때,\n기억하세요.\n별도 낮에는 보이지 않을 뿐\n사라진 게 아닙니다.',
+      '세상이 당신에게 의미를 묻겠지만\n살아있는 것 자체가\n이미 대단한 의미입니다.',
+      '포기하고 싶은 마음과\n포기하지 않는 마음 사이에서\n흔들리는 당신은 이미 싸우고 있는 겁니다.',
+      '오늘 하루를 버틴 것은\n작은 일이 아닙니다.\n그것은 당신만의 기적입니다.',
+      '어둠 속에서도\n당신이라는 빛은\n사라지지 않아요.',
+    ],
+    conclusion: [
+      '지금은 캄캄한 바다 속 같겠지만\n당신은 반드시 수면 위로 떠오를 거예요.',
+      '이 밤이 영원할 것 같지만\n새벽은 예고 없이 찾아옵니다.\n당신에게도요.',
+      '내일은 오늘보다\n아주 조금은 덜 아플 거예요.\n그 조금이 모여 봄이 됩니다.',
+      '당신이 존재하는 것만으로\n이 세상은 조금 더 따뜻합니다.',
+      '지금 이 순간에도\n당신을 응원하는 별이\n하늘에서 빛나고 있어요.',
+      '숨을 쉬세요. 천천히.\n당신은 여기 있어도 됩니다.\n아니, 여기 있어줘서 고맙습니다.',
+    ],
+  },
+
+  // ────────────────────────────
+  //  기본 위로 (어떤 카테고리에도 안 걸릴 때)
+  // ────────────────────────────
+  general: {
+    label: '오늘의 위로',
+    keywords: [],
+    intro: [
+      '말로 다 표현하지 못할\n무언가를 안고 있는 밤이군요.',
+      '지금 이 순간,\n당신의 마음이 무겁다는 것을 알고 있어요.',
+      '때로는 이유 없이\n마음이 아픈 날도 있는 법이지요.',
+      '무슨 일인지 다 말하지 않아도 돼요.\n당신이 힘들다는 것, 그것으로 충분합니다.',
+      '당신이 이 밤에\n위로를 찾아 여기까지 왔다는 것만으로도\n당신은 충분히 용감합니다.',
+      '누구에게도 말하지 못한\n마음 한 조각을 내려놓아도 되는 곳이에요.',
+    ],
+    body: [
+      '완벽하지 않아도 됩니다.\n누구도 완벽한 하루를 사는 사람은 없어요.\n우리는 모두 조금씩 어긋나며 살아갑니다.',
+      '지금 당신이 느끼는 감정은\n모두 자연스러운 것입니다.\n억누르지 말고 흘러가게 두세요.',
+      '가끔은 아무것도 하지 않는 것이\n가장 필요한 일일 수 있어요.\n쉬는 것도 전진입니다.',
+      '당신이 생각하는 것보다\n당신은 훨씬 더 강하고\n훨씬 더 사랑받을 자격이 있습니다.',
+      '바람은 방향을 잃은 것 같아도\n결국 어딘가에 닿습니다.\n당신의 하루도 그럴 거예요.',
+      '세상의 속도에 맞추지 못해도\n당신의 리듬으로 걸어가면 됩니다.\n느려도 괜찮아요.',
+    ],
+    conclusion: [
+      '이 밤이 지나면\n당신에게도 따뜻한 아침이 올 거예요.',
+      '지금 이 시가\n당신의 마음에\n작은 온기가 되기를 바랍니다.',
+      '당신은 혼자가 아닙니다.\n이 밤, 이 시가\n당신 곁에 있을게요.',
+      '오늘 밤은 푹 쉬세요.\n내일의 당신은\n분명 오늘보다 괜찮아질 거예요.',
+      '별은 가장 어두운 밤에\n가장 밝게 빛납니다.\n당신도 그럴 거예요.',
+      '한 편의 시처럼\n당신의 이야기도\n아름답게 이어질 거예요.',
+    ],
+  },
+};
+
+
+// ── 2. 키워드 분석 및 카테고리 감지 ──
+function detectCategory(input) {
+  const text = input.toLowerCase().replace(/\s/g, '');
+  const scores = {};
+
+  for (const [category, data] of Object.entries(poemData)) {
+    if (category === 'general') continue;
+    let score = 0;
+    for (const keyword of data.keywords) {
+      if (text.includes(keyword)) score++;
+    }
+    if (score > 0) scores[category] = score;
+  }
+
+  if (Object.keys(scores).length === 0) return 'general';
+
+  // 가장 높은 점수의 카테고리 반환
+  return Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+}
+
+
+// ── 3. 시 조합 알고리즘 ──
+function pickRandom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function generatePoem(input) {
+  const category = detectCategory(input);
+  const data = poemData[category];
+
+  const intro = pickRandom(data.intro);
+  const body = pickRandom(data.body);
+  const conclusion = pickRandom(data.conclusion);
+
+  return {
+    category: data.label,
+    poem: `${intro}\n\n${body}\n\n${conclusion}`,
+  };
+}
+
+
+// ═══════════════════════════════════════════════════
+//  Phase 2: UI/UX — 별·타자기·인터랙션
+// ═══════════════════════════════════════════════════
+
+// ── 배경 별 생성 ──
+function createStars() {
+  const container = document.getElementById('starsContainer');
+  const count = Math.min(180, Math.floor(window.innerWidth * window.innerHeight / 5000));
+
+  for (let i = 0; i < count; i++) {
+    const star = document.createElement('div');
+    star.classList.add('star');
+    if (Math.random() > 0.85) star.classList.add('large');
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.setProperty('--duration', (2 + Math.random() * 4) + 's');
+    star.style.setProperty('--peak-opacity', (0.3 + Math.random() * 0.7).toFixed(2));
+    star.style.animationDelay = (Math.random() * 5) + 's';
+    container.appendChild(star);
+  }
+
+  // 유성 1개
+  const shootingStar = document.createElement('div');
+  shootingStar.classList.add('shooting-star');
+  shootingStar.style.top = (5 + Math.random() * 30) + '%';
+  shootingStar.style.left = (10 + Math.random() * 40) + '%';
+  shootingStar.style.animationDelay = (2 + Math.random() * 8) + 's';
+  shootingStar.style.animationDuration = (2.5 + Math.random() * 2) + 's';
+  container.appendChild(shootingStar);
+}
+
+
+// ── 타자기 효과 ──
+function typeWriter(element, text, speed = 45) {
+  return new Promise((resolve) => {
+    element.textContent = '';
+    element.classList.add('cursor-blink');
+    let i = 0;
+
+    function type() {
+      if (i < text.length) {
+        // 줄바꿈이면 바로 추가
+        if (text[i] === '\n') {
+          element.textContent += '\n';
+        } else {
+          element.textContent += text[i];
+        }
+        i++;
+        // 문장 부호 뒤에는 살짝 멈춤
+        const char = text[i - 1];
+        let delay = speed;
+        if ('.!?,。，！？'.includes(char)) delay = speed * 4;
+        else if ('\n'.includes(char)) delay = speed * 3;
+        else delay = speed + Math.random() * 20 - 10;
+
+        setTimeout(type, delay);
+      } else {
+        element.classList.remove('cursor-blink');
+        resolve();
+      }
+    }
+
+    type();
+  });
+}
+
+
+// ── DOM 요소 ──
+const moodInput = document.getElementById('moodInput');
+const generateBtn = document.getElementById('generateBtn');
+const poemSection = document.getElementById('poemSection');
+const poemOutput = document.getElementById('poemOutput');
+const categoryLabel = document.getElementById('categoryLabel');
+const charCount = document.getElementById('charCount');
+const copyBtn = document.getElementById('copyBtn');
+const retryBtn = document.getElementById('retryBtn');
+
+let lastInput = '';
+let isGenerating = false;
+
+
+// ── 글자 수 카운트 ──
+moodInput.addEventListener('input', () => {
+  const len = moodInput.value.length;
+  charCount.textContent = `${len} / 300`;
+});
+
+
+// ── 시 생성 ──
+async function handleGenerate() {
+  const input = moodInput.value.trim();
+  if (!input || isGenerating) return;
+
+  lastInput = input;
+  isGenerating = true;
+  generateBtn.disabled = true;
+  generateBtn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> 시를 쓰는 중…';
+  lucide.createIcons();
+
+  // 짧은 딜레이로 '생각하는 느낌'
+  await new Promise((r) => setTimeout(r, 600 + Math.random() * 800));
+
+  const { category, poem } = generatePoem(input);
+
+  categoryLabel.textContent = category;
+  poemSection.classList.remove('hidden');
+  poemSection.classList.add('fade-in');
+  poemOutput.textContent = '';
+
+  // 스크롤 이동
+  poemSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  await typeWriter(poemOutput, poem, 50);
+
+  generateBtn.disabled = false;
+  generateBtn.innerHTML = '<i data-lucide="feather" class="w-4 h-4"></i> 시를 지어주세요';
+  lucide.createIcons();
+  isGenerating = false;
+}
+
+generateBtn.addEventListener('click', handleGenerate);
+
+// Enter 키 (Shift+Enter는 줄바꿈)
+moodInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    handleGenerate();
+  }
+});
+
+
+// ── 복사 버튼 ──
+copyBtn.addEventListener('click', async () => {
+  const text = poemOutput.textContent;
+  if (!text) return;
+  try {
+    await navigator.clipboard.writeText(text);
+    copyBtn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i>';
+    lucide.createIcons();
+    setTimeout(() => {
+      copyBtn.innerHTML = '<i data-lucide="copy" class="w-4 h-4"></i>';
+      lucide.createIcons();
+    }, 1500);
+  } catch {
+    // 폴백
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  }
+});
+
+
+// ── 다시 쓰기 버튼 ──
+retryBtn.addEventListener('click', () => {
+  if (lastInput && !isGenerating) {
+    moodInput.value = lastInput;
+    handleGenerate();
+  }
+});
+
+
+// ── 초기화 ──
+document.addEventListener('DOMContentLoaded', () => {
+  createStars();
+  lucide.createIcons();
+  moodInput.focus();
+});
+</script>
+
+</body>
+</html>
