@@ -83,28 +83,20 @@
     /* ── 유성 ── */
     .shooting-star {
       position: absolute;
-      width: 0;
       height: 2px;
+      width: 120px;
       border-radius: 1px;
-      background: linear-gradient(90deg, transparent, rgba(180,200,255,0.2), rgba(255,255,255,0.85));
-      filter: drop-shadow(0 0 3px rgba(180,200,255,0.6));
-      transform: rotate(-35deg);
-      transform-origin: right center;
-      opacity: 0;
+      background: linear-gradient(90deg, rgba(255,255,255,0.9), rgba(180,200,255,0.3), transparent);
+      filter: drop-shadow(0 0 4px rgba(180,200,255,0.5));
+      transform: rotate(35deg);
       pointer-events: none;
+      animation: shootFall var(--dur) linear forwards;
     }
-    @keyframes shootGrow {
-      0% { width: 0; opacity: 0; }
-      8% { width: 120px; opacity: 1; }
-      100% { width: 120px; opacity: 1; }
-    }
-    @keyframes shootMove {
-      0% { transform: rotate(-35deg) translateX(0); }
-      100% { transform: rotate(-35deg) translateX(280px); }
-    }
-    @keyframes shootFade {
-      0%, 60% { opacity: 1; }
-      100% { opacity: 0; }
+    @keyframes shootFall {
+      0% { opacity: 0; }
+      5% { opacity: 1; }
+      70% { opacity: 0.6; }
+      100% { opacity: 0; transform: rotate(35deg) translate(300px, 0); }
     }
 
     /* ── 타자기 커서 ── */
@@ -558,18 +550,14 @@ function createStars() {
     container.appendChild(star);
   }
 
-  // 유성 — 오른쪽 위에서 왼쪽 아래로 자연스럽게 흘러내림
+  // 유성 — 왼쪽 위에서 오른쪽 아래로 자연스럽게 흘러내림
   function spawnShootingStar() {
     const star = document.createElement('div');
     star.classList.add('shooting-star');
-    star.style.top = (2 + Math.random() * 20) + '%';
-    star.style.left = (15 + Math.random() * 55) + '%';
-    const duration = 0.8 + Math.random() * 0.5;
-    star.style.animation = [
-      `shootGrow ${duration * 0.15}s ease-out forwards`,
-      `shootMove ${duration}s linear forwards`,
-      `shootFade ${duration}s ease-in forwards`,
-    ].join(', ');
+    star.style.top = (2 + Math.random() * 15) + '%';
+    star.style.left = (5 + Math.random() * 50) + '%';
+    const duration = 0.9 + Math.random() * 0.4;
+    star.style.setProperty('--dur', duration + 's');
     container.appendChild(star);
     setTimeout(() => star.remove(), duration * 1000 + 500);
   }
