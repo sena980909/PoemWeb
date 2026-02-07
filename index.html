@@ -8,6 +8,9 @@
   <meta property="og:title" content="Mood Poet — 오늘, 당신을 위한 시" />
   <meta property="og:description" content="기분을 입력하면 위로의 시를 지어주는 감성 AI 시인" />
   <meta property="og:type" content="website" />
+  <meta property="og:image" content="icon.jpg" />
+  <link rel="icon" type="image/jpeg" href="icon.jpg" />
+  <link rel="apple-touch-icon" href="icon.jpg" />
   <title>Mood Poet — 오늘, 당신을 위한 시</title>
 
   <!-- Tailwind CSS CDN -->
@@ -80,18 +83,27 @@
     /* ── 유성 ── */
     .shooting-star {
       position: absolute;
-      width: 100px;
-      height: 1px;
-      background: linear-gradient(90deg, rgba(255,255,255,0.9), rgba(180,200,255,0.3), transparent);
+      width: 0;
+      height: 2px;
+      border-radius: 1px;
+      background: linear-gradient(90deg, transparent, rgba(180,200,255,0.2), rgba(255,255,255,0.85));
+      filter: drop-shadow(0 0 3px rgba(180,200,255,0.6));
+      transform: rotate(-35deg);
+      transform-origin: right center;
       opacity: 0;
-      transform-origin: left center;
-      transform: rotate(215deg);
+      pointer-events: none;
     }
-    @keyframes shoot {
-      0% { opacity: 0; width: 0; }
-      3% { opacity: 1; width: 100px; }
-      20% { opacity: 0.6; width: 60px; }
-      35% { opacity: 0; width: 0; }
+    @keyframes shootGrow {
+      0% { width: 0; opacity: 0; }
+      8% { width: 120px; opacity: 1; }
+      100% { width: 120px; opacity: 1; }
+    }
+    @keyframes shootMove {
+      0% { transform: rotate(-35deg) translateX(0); }
+      100% { transform: rotate(-35deg) translateX(280px); }
+    }
+    @keyframes shootFade {
+      0%, 60% { opacity: 1; }
       100% { opacity: 0; }
     }
 
@@ -546,19 +558,28 @@ function createStars() {
     container.appendChild(star);
   }
 
-  // 유성 — 주기적으로 랜덤 위치에서 생성
+  // 유성 — 오른쪽 위에서 왼쪽 아래로 자연스럽게 흘러내림
   function spawnShootingStar() {
     const star = document.createElement('div');
     star.classList.add('shooting-star');
-    star.style.top = (3 + Math.random() * 25) + '%';
-    star.style.left = (20 + Math.random() * 60) + '%';
-    star.style.animation = `shoot ${1.5 + Math.random() * 1}s ease-out forwards`;
+    star.style.top = (2 + Math.random() * 20) + '%';
+    star.style.left = (15 + Math.random() * 55) + '%';
+    const duration = 0.8 + Math.random() * 0.5;
+    star.style.animation = [
+      `shootGrow ${duration * 0.15}s ease-out forwards`,
+      `shootMove ${duration}s linear forwards`,
+      `shootFade ${duration}s ease-in forwards`,
+    ].join(', ');
     container.appendChild(star);
-    setTimeout(() => star.remove(), 3000);
+    setTimeout(() => star.remove(), duration * 1000 + 500);
   }
-  // 5~12초마다 유성 하나
-  setInterval(spawnShootingStar, 5000 + Math.random() * 7000);
-  setTimeout(spawnShootingStar, 2000);
+  // 6~14초마다 유성 하나
+  function scheduleNext() {
+    const delay = 6000 + Math.random() * 8000;
+    setTimeout(() => { spawnShootingStar(); scheduleNext(); }, delay);
+  }
+  setTimeout(spawnShootingStar, 3000);
+  scheduleNext();
 }
 
 
