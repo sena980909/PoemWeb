@@ -209,6 +209,7 @@
           <i data-lucide="quote" class="w-4 h-4 text-indigo-300/40"></i>
           <span id="categoryLabel" class="category-tag text-xs px-3 py-1 rounded-full text-indigo-200/70"></span>
         </div>
+        <h2 id="poemTitle" class="text-sm sm:text-base text-indigo-200/60 font-medium tracking-wide mb-5 hidden"></h2>
         <div id="poemOutput" class="text-lg sm:text-xl text-gray-200/90 font-light leading-[2.2] whitespace-pre-line min-h-[120px]"></div>
         <div class="flex items-center justify-between mt-8 pt-5 border-t border-white/5">
           <span class="text-xs text-gray-500/50 italic">— Mood Poet</span>
@@ -272,6 +273,41 @@ const poemData = {
       '당신이 걸어온 길 위에\n이미 수많은 꽃이 피어나고 있어요.',
       '오늘 하루를 버틴 당신에게\n별 하나를 띄워 드릴게요.',
     ],
+    bridge: [
+      '그래도, 당신은 오늘을 견뎌냈습니다.',
+      '하지만 알고 있나요,',
+      '문득 고개를 들어보면,',
+      '그럼에도 불구하고,',
+      '잠시 멈춰 서서 돌아보면,',
+      '그 무거운 하루 끝에도,',
+      '숨을 한 번 깊이 들이쉬고,',
+    ],
+    deep: {
+      intro: [
+        '당신의 영혼까지 갈아 넣는 그 자리,\n더 이상 견디지 않아도 됩니다.',
+        '매일이 전쟁터 같은 하루,\n당신의 상처가 얼마나 깊은지 압니다.',
+        '숨조차 쉬기 힘든 그곳에서\n당신은 너무 오래 버텨왔어요.',
+      ],
+      body: [
+        '무너져도 괜찮습니다.\n당신은 기계가 아니에요.\n아파할 권리가 있습니다.',
+        '더 이상 혼자 삼키지 마세요.\n그 고통은 당신 혼자\n감당할 크기가 아닙니다.',
+        '도망치는 것이 아닙니다.\n자신을 지키는 것입니다.\n그것이 가장 용감한 선택이에요.',
+      ],
+      conclusion: [
+        '당신의 존재는\n어떤 직장보다, 어떤 성과보다\n소중합니다. 제발 기억하세요.',
+        '지금 이 순간, 당신에게 말합니다.\n당신은 충분합니다.\n그 누가 뭐라 해도.',
+        '이 밤이 지나면\n당신은 다시 일어설 겁니다.\n당신은 그런 사람이니까요.',
+      ],
+    },
+    titles: [
+      '빌딩 숲의 바람에게',
+      '퇴근길, 별을 올려다보며',
+      '형광등 아래 피어난 꽃',
+      '오늘도 출근한 당신에게',
+      '월급보다 무거운 마음을 안고',
+      '야근의 끝, 새벽이 오기 전에',
+      '사표 대신 적는 한 편의 시',
+    ],
   },
 
   // ────────────────────────────
@@ -303,6 +339,40 @@ const poemData = {
       '사랑하는 마음 그 자체만으로\n당신은 이미\n이 세상에서 가장 부유한 사람입니다.',
       '두 사람의 걸음이\n같은 방향을 향해\n오래도록 나란히 걸어가기를.',
       '당신이 사랑하는 오늘이\n내일은 가장 소중한 추억이 될 거예요.',
+    ],
+    bridge: [
+      '그 설렘 속에서,',
+      '사랑이 깊어질수록,',
+      '두 사람 사이의 공기가 달콤해지는 지금,',
+      '이 아름다운 순간 속에서,',
+      '심장이 노래하는 이 밤에,',
+      '손끝이 닿을 듯 말 듯한 그 거리에서,',
+    ],
+    deep: {
+      intro: [
+        '온 세상이 당신과 그 사람,\n단 둘만 남은 것 같은 밤이군요.',
+        '심장이 터질 것 같은 이 감정,\n이것이 바로 사랑의 한가운데입니다.',
+        '숨이 멎을 만큼 벅찬 이 감정을\n온몸으로 느끼고 있군요.',
+      ],
+      body: [
+        '이토록 강렬한 감정은\n일생에 몇 번 오지 않습니다.\n지금 이 순간을 영원히 기억하세요.',
+        '당신의 온 우주가\n그 사람을 향해 기울고 있어요.\n그것이 사랑의 중력입니다.',
+        '세상의 모든 시가\n당신의 이 감정을\n다 담아내지 못할 거예요.',
+      ],
+      conclusion: [
+        '이 사랑이 영원의 다른 이름이 되기를\n온 별들에게 빌어 봅니다.',
+        '당신이 느끼는 이 벅찬 감정이\n평생의 온기가 되기를.',
+        '오늘 밤, 우주가\n당신의 사랑을 축복하고 있어요.',
+      ],
+    },
+    titles: [
+      '두근거림이라는 이름의 밤',
+      '그대라는 계절',
+      '사랑이 피어나는 순간',
+      '심장이 쓴 연애편지',
+      '분홍빛으로 물드는 하루',
+      '그대를 떠올리면',
+      '별들도 부러워할 이 밤',
     ],
   },
 
@@ -338,6 +408,41 @@ const poemData = {
       '오늘 밤 흘린 눈물 위에\n내일은 무지개가 걸릴 거예요.',
       '당신의 다음 봄은\n지금 이 겨울이 만들고 있답니다.',
     ],
+    bridge: [
+      '그래도 기억하세요,',
+      '하지만 이 눈물 끝에는,',
+      '문득 바람이 불어올 때,',
+      '텅 빈 자리를 바라보며,',
+      '그리움이 밀려와도,',
+      '아픔 속에서도,',
+      '눈물 너머로,',
+    ],
+    deep: {
+      intro: [
+        '숨을 쉴 수 없을 만큼\n그 사람의 부재가\n당신을 짓누르고 있군요.',
+        '세상이 통째로 무너진 것 같은\n그 고통의 한가운데에 있군요.',
+        '심장이 찢어지는 이 밤,\n당신의 아픔이 여기까지 느껴집니다.',
+      ],
+      body: [
+        '지금은 죽을 것 같은 고통이겠지만\n이 아픔은 당신이 살아있다는 증거입니다.\n살아있기에 아픈 겁니다.',
+        '세상이 끝난 것 같아도\n당신의 이야기는 끝나지 않았어요.\n이별은 마침표가 아니라 쉼표입니다.',
+        '가슴이 찢어져도\n당신은 다시 사랑할 수 있는 사람이에요.\n지금은 믿기지 않겠지만.',
+      ],
+      conclusion: [
+        '이 깊은 밤의 끝에서\n당신은 다시 숨 쉬게 될 겁니다.\n반드시.',
+        '당신의 상처 위에\n시간이라는 약을 부어드릴게요.\n천천히, 천천히 나을 거예요.',
+        '지금은 아무것도 보이지 않겠지만\n당신의 다음 사랑은\n이 어둠보다 훨씬 밝을 거예요.',
+      ],
+    },
+    titles: [
+      '그리움이라는 이름의 밤',
+      '빈 자리에 부는 바람',
+      '이별 후, 첫 번째 밤에',
+      '기억이 가시가 될 때',
+      '당신이라는 계절이 지고',
+      '눈물로 쓴 편지',
+      '사랑했으므로',
+    ],
   },
 
   // ────────────────────────────
@@ -368,6 +473,40 @@ const poemData = {
       '오늘의 외로움이\n내일 더 깊은 만남의 씨앗이 될 거예요.',
       '당신의 따뜻함을 알아볼 사람이\n지금 이 순간에도\n당신을 향해 걸어오고 있어요.',
       '사람에게서 받은 상처는\n결국 사람에게서 치유됩니다.\n그 사람이 곧 나타날 거예요.',
+    ],
+    bridge: [
+      '하지만 잊지 마세요,',
+      '그 상처 너머에는,',
+      '잠시 눈을 감고 생각해보면,',
+      '아픔이 지나간 자리에는,',
+      '그럼에도 당신은,',
+      '상처받은 마음을 쓸어내리며,',
+    ],
+    deep: {
+      intro: [
+        '믿었던 사람에게 칼을 맞은 듯한\n그 배신의 고통,\n이루 말할 수 없겠지요.',
+        '세상 모든 사람이 적처럼 느껴지는\n그 고립감 속에 있군요.',
+        '더 이상 누구도 믿을 수 없다는\n그 절망이 당신을 감싸고 있군요.',
+      ],
+      body: [
+        '사람에게 지칠 대로 지쳤을 당신에게\n억지로 다시 믿으라 말하지 않겠습니다.\n지금은 그저 쉬어도 됩니다.',
+        '당신의 고통은 진짜입니다.\n가볍게 넘기지 않아도 됩니다.\n충분히 아파할 자격이 있어요.',
+        '모든 문을 닫고 싶은 마음,\n이해합니다.\n하지만 당신 안의 문만큼은\n열어두세요.',
+      ],
+      conclusion: [
+        '지금은 사람이 두렵겠지만\n당신을 진심으로 안아줄 사람이\n이 세상에 반드시 있습니다.',
+        '상처가 아물 때까지\n이 시가 당신 곁에 있을게요.\n당신은 혼자가 아닙니다.',
+        '깊은 상처일수록\n치유된 뒤에는 더 강해집니다.\n당신도 그럴 거예요.',
+      ],
+    },
+    titles: [
+      '사람이라는 미로에서',
+      '상처 위에 피어난 말',
+      '혼자라는 이름의 성',
+      '마음의 거리',
+      '가시 돋힌 말들 사이에서',
+      '눈치라는 감옥에서',
+      '관계의 무게를 내려놓으며',
     ],
   },
 
@@ -403,6 +542,41 @@ const poemData = {
       '지금 이 순간에도\n당신을 응원하는 별이\n하늘에서 빛나고 있어요.',
       '숨을 쉬세요. 천천히.\n당신은 여기 있어도 됩니다.\n아니, 여기 있어줘서 고맙습니다.',
     ],
+    bridge: [
+      '그래도, 들어주세요.',
+      '하지만 이 어둠 속에서도,',
+      '문득 이런 생각을 해봅니다.',
+      '캄캄한 밤이지만,',
+      '깊은 숨을 한 번 쉬고,',
+      '아무것도 아닌 것 같은 이 순간에도,',
+      '가만히 귀 기울여 보면,',
+    ],
+    deep: {
+      intro: [
+        '살아있는 것 자체가\n고통인 밤이 있다는 걸\n저는 압니다.',
+        '세상에 혼자 남겨진 것 같은\n그 절대적인 고독 속에 있군요.',
+        '한 발짝도 떼기 힘든\n그 무게 속에 서 있는 당신에게\n이 시를 보냅니다.',
+      ],
+      body: [
+        '지금 당신이 느끼는 고통은\n진짜입니다.\n아무도 그것을 가볍다고 말할 수 없어요.\n하지만 이 고통이 영원하지는 않을 거예요.',
+        '죽고 싶다는 말 속에는\n사실 살고 싶다는 마음이 숨어 있어요.\n이 아픔 없이 살고 싶다는\n간절한 외침.',
+        '당신이 사라지면\n이 세상에 채울 수 없는\n빈자리가 생깁니다.\n당신은 대체 불가능한 존재예요.',
+      ],
+      conclusion: [
+        '제발, 오늘 밤만 버텨주세요.\n내일 아침 해가 뜨면\n세상은 분명 조금 달라져 있을 겁니다.',
+        '당신은 소중합니다.\n이 말이 빈말처럼 들리겠지만\n진심입니다.\n당신이 여기 있어줘서 감사합니다.',
+        '도움을 요청하는 것은\n약한 것이 아닙니다.\n가장 용감한 일입니다.\n당신 곁에 손을 내밀 사람이 있어요.',
+      ],
+    },
+    titles: [
+      '긴 밤의 한가운데서',
+      '안개 속을 걷는 당신에게',
+      '숨을 쉬어도 되는 밤',
+      '어둠에게 보내는 편지',
+      '가라앉지 않을 거예요',
+      '당신이라는 별이 지지 않도록',
+      '오늘도 살아있는 당신에게',
+    ],
   },
 
   // ────────────────────────────
@@ -434,6 +608,40 @@ const poemData = {
       '오늘 같은 날이 더 많아지도록\n별들이 당신 편에서\n반짝이고 있을 거예요.',
       '당신의 기쁨에\n이 작은 시 한 편을 보태며\n함께 축하합니다.',
       '행복한 오늘이\n아름다운 내일의 씨앗이 되기를\n밤하늘에 소원을 걸어 봅니다.',
+    ],
+    bridge: [
+      '이 기쁨 속에서,',
+      '환한 미소와 함께,',
+      '행복이 넘치는 이 순간,',
+      '가슴이 벅차오르는 지금,',
+      '반짝이는 오늘 속에서,',
+      '기쁨의 물결 위에서,',
+    ],
+    deep: {
+      intro: [
+        '세상이 멈춘 것 같은\n이 완벽한 순간,\n당신은 우주의 중심에 서 있어요.',
+        '가슴이 터질 것 같은 이 행복,\n당신은 지금 인생에서\n가장 빛나는 순간을 살고 있어요.',
+        '이토록 벅찬 기쁨 앞에\n눈물이 날 만큼\n행복한 밤이군요.',
+      ],
+      body: [
+        '이 순간을 온 감각으로 기억하세요.\n이것이 당신이 살아온\n모든 날들의 보상입니다.',
+        '당신이 흘린 모든 눈물이\n오늘 이 웃음으로 돌아온 거예요.\n당신은 이 행복을 누릴 자격이 충분합니다.',
+        '세상의 모든 아름다운 것들이\n오늘 당신을 위해\n한자리에 모인 것 같아요.',
+      ],
+      conclusion: [
+        '이 눈부신 순간이\n당신의 남은 모든 날들에\n빛을 비춰줄 거예요.',
+        '오늘의 이 기쁨을 기억하세요.\n어떤 어두운 밤이 와도\n이 빛이 길을 밝혀줄 테니까요.',
+        '당신의 행복에\n온 우주가 축배를 들고 있어요.',
+      ],
+    },
+    titles: [
+      '오늘, 세상이 빛나는 이유',
+      '행복이 내린 날',
+      '웃음꽃이 피는 밤',
+      '반짝이는 오늘에게',
+      '기쁨이라는 이름의 선물',
+      '당신의 하늘에 무지개가',
+      '세상에서 가장 환한 미소',
     ],
   },
 
@@ -467,9 +675,98 @@ const poemData = {
       '별은 가장 어두운 밤에\n가장 밝게 빛납니다.\n당신도 그럴 거예요.',
       '한 편의 시처럼\n당신의 이야기도\n아름답게 이어질 거예요.',
     ],
+    bridge: [
+      '그래도,',
+      '하지만 알아두세요,',
+      '문득 올려다본 하늘에는,',
+      '잠시 멈춰 서서,',
+      '깊은 숨 한 번 쉬어보면,',
+      '이 밤이 속삭이는 말,',
+    ],
+    deep: {
+      intro: [
+        '세상이 온통 무게로 가득한\n이 밤의 한가운데,\n당신의 숨소리가 들립니다.',
+        '말로는 다 담을 수 없는\n그 깊은 고통 속에 있군요.',
+        '아무에게도 말하지 못한\n그 무거운 짐을\n혼자 지고 있었군요.',
+      ],
+      body: [
+        '당신의 고통은\n누구도 가볍다 말할 수 없습니다.\n지금 느끼는 감정 그대로가\n당신의 진실입니다.',
+        '무너져도 됩니다.\n바닥을 찍어야\n다시 올라갈 수 있으니까요.\n지금은 그저 바닥에 누워도 괜찮아요.',
+        '도움을 청하는 것은\n약한 것이 아닙니다.\n가장 용감한 선택입니다.',
+      ],
+      conclusion: [
+        '이 깊은 밤도 반드시 지나갑니다.\n그리고 당신은\n그 새벽을 맞이할 자격이 있습니다.',
+        '당신은 소중합니다.\n이 말이 닿기를,\n진심으로 바랍니다.',
+        '오늘 밤, 이 시가\n당신의 손을 잡아드릴게요.\n놓지 않을게요.',
+      ],
+    },
+    titles: [
+      '오늘 밤, 당신에게',
+      '바람이 전하는 말',
+      '별 하나에 담은 위로',
+      '밤하늘 아래 쓰는 편지',
+      '당신이라는 이야기',
+      '이 밤이 지나면',
+      '마음에 내리는 달빛',
+    ],
   },
 };
 
+
+// ── 1-b. 시적 이미지 사전 ──
+const poeticImages = {
+  '회사': ['빌딩 숲 사이로', '형광등 불빛 아래서'],
+  '직장': ['빌딩 숲 사이로', '회색빛 책상 위에서'],
+  '상사': ['날 선 목소리가 메아리치는 곳에서'],
+  '팀장': ['날 선 시선이 내리꽂히는 자리에서'],
+  '야근': ['꺼지지 않는 불빛 아래서', '텅 빈 사무실에 홀로'],
+  '출근': ['만원 지하철에 실려 가는 아침'],
+  '퇴근': ['노을이 물든 퇴근길에서'],
+  '이별': ['빈 자리가 말을 거는 밤에', '남겨진 향기 속에서'],
+  '헤어': ['텅 빈 골목을 걸으며', '사라진 온기를 더듬으며'],
+  '그리워': ['바람에 실려 오는 기억 속에서'],
+  '보고싶': ['닿지 않는 거리를 바라보며'],
+  '외로': ['텅 빈 방에 울리는 시계 소리 속에서'],
+  '혼자': ['고요한 어둠 속에 홀로 서서'],
+  '눈물': ['흐르는 눈물이 말을 대신하는 밤에'],
+  '울고': ['소리 없이 적시는 베개 위에서'],
+  '친구': ['함께 걷던 길 위에서'],
+  '가족': ['식탁 위 비어 있는 자리를 바라보며'],
+  '엄마': ['엄마의 등이 작아 보이던 그 순간'],
+  '아빠': ['아버지의 굳은 손을 떠올리며'],
+  '배신': ['믿음이 산산이 부서진 자리에서'],
+  '우울': ['짙은 안개가 내려앉은 마음 속에서'],
+  '무기력': ['움직이지 않는 시간 속에서'],
+  '불안': ['심장이 조여오는 새벽에'],
+  '돈': ['텅 빈 지갑을 들여다보며'],
+  '월급': ['통장을 스쳐 지나가는 숫자들 앞에서'],
+  '취업': ['수백 번째 지원서를 보내며'],
+  '면접': ['떨리는 목소리를 삼키며'],
+  '사랑': ['가슴 속에 피어난 꽃 한 송이'],
+  '설레': ['심장이 종을 울리는 순간'],
+  '결혼': ['영원을 약속하는 그 손끝에서'],
+  '행복': ['세상이 반짝이는 이 순간에'],
+  '감사': ['따뜻한 마음이 차오르는 이 밤에'],
+  '성공': ['꿈이 현실이 된 이 눈부신 순간에'],
+  '합격': ['기다림의 끝에 피어난 합격의 꽃 앞에서'],
+  '여행': ['낯선 거리의 바람을 맞으며'],
+  '꽃': ['피어난 꽃잎 사이로 불어오는 바람 속에서'],
+  '죽고': ['끝이 보이지 않는 터널 속에서'],
+  '포기': ['놓아버리고 싶은 그 무게 앞에서'],
+  '싸움': ['날카로운 말들이 난무하는 전장에서'],
+  '무시': ['투명인간이 된 것 같은 그 자리에서'],
+  '질투': ['비교의 거울 앞에 선 채로'],
+};
+
+// ── 1-c. 감정 강도 키워드 사전 ──
+const intensityKeywords = {
+  '너무': 1, '진짜': 1, '정말': 1, '매우': 1, '완전': 1,
+  '미치겠': 2, '죽겠': 2, '죽고싶': 3, '죽을것같': 2, '자살': 3,
+  '개': 1, '존나': 2, '씨발': 2, '시발': 2, 'ㅈㄴ': 2,
+  '극혐': 2, '최악': 2, '지옥': 2, '절망': 2,
+  '미칠것같': 2, '환장': 2, '돌아버리겠': 2,
+  '넘': 1, '겁나': 1, '엄청': 1, '무지': 1,
+};
 
 // ── 2. 키워드 분석 및 카테고리 감지 ──
 function detectCategory(input) {
@@ -492,7 +789,36 @@ function detectCategory(input) {
 }
 
 
-// ── 3. 시 조합 알고리즘 ──
+// ── 3. 감정 강도 감지 ──
+function detectIntensity(input) {
+  const text = input.replace(/\s/g, '');
+  let score = 0;
+  for (const [keyword, points] of Object.entries(intensityKeywords)) {
+    if (text.includes(keyword)) score += points;
+  }
+  // 감탄부호, 물음표 반복도 강도에 반영
+  const exclamations = (input.match(/[!！]{2,}/g) || []).length;
+  const repeats = (input.match(/(.)\1{3,}/g) || []).length; // ㅠㅠㅠㅠ 등
+  score += exclamations + repeats;
+  return score; // 0~2: 보통, 3+: 강한 감정
+}
+
+
+// ── 4. 시적 이미지 추출 ──
+function extractImages(input) {
+  const images = [];
+  for (const [keyword, phrases] of Object.entries(poeticImages)) {
+    if (input.includes(keyword)) {
+      images.push(pickRandom(phrases));
+    }
+  }
+  // 중복 제거 후 최대 2개
+  const unique = [...new Set(images)];
+  return unique.slice(0, 2);
+}
+
+
+// ── 5. 시 조합 알고리즘 ──
 function pickRandom(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
@@ -500,14 +826,63 @@ function pickRandom(arr) {
 function generatePoem(input) {
   const category = detectCategory(input);
   const data = poemData[category];
+  const intensity = detectIntensity(input);
+  const isDeep = intensity >= 3 && data.deep;
 
-  const intro = pickRandom(data.intro);
-  const body = pickRandom(data.body);
-  const conclusion = pickRandom(data.conclusion);
+  // 시적 이미지 추출
+  const images = extractImages(input);
+
+  // 제목 선택
+  const title = data.titles ? pickRandom(data.titles) : '';
+
+  // 소스 풀 결정 (강한 감정이면 deep에서 우선, 아니면 일반)
+  const introPool = isDeep ? data.deep.intro : data.intro;
+  const bodyPool = isDeep ? data.deep.body : data.body;
+  const conclusionPool = isDeep ? data.deep.conclusion : data.conclusion;
+
+  const intro = pickRandom(introPool);
+  const bridge = data.bridge ? pickRandom(data.bridge) : '';
+  const body1 = pickRandom(bodyPool);
+
+  // 50% 확률로 body 2개
+  const useDoubleBody = Math.random() > 0.5;
+  let body2 = '';
+  if (useDoubleBody) {
+    // body1과 다른 것 선택
+    const remaining = bodyPool.filter(b => b !== body1);
+    if (remaining.length > 0) {
+      body2 = pickRandom(remaining);
+    }
+  }
+
+  const conclusion = pickRandom(conclusionPool);
+
+  // 시 조합
+  const parts = [];
+
+  // 시적 이미지 도입부 (있으면)
+  if (images.length > 0) {
+    parts.push(images.join(',\n'));
+  }
+
+  parts.push(intro);
+
+  if (bridge) {
+    parts.push(bridge);
+  }
+
+  parts.push(body1);
+
+  if (body2) {
+    parts.push(body2);
+  }
+
+  parts.push(conclusion);
 
   return {
     category: data.label,
-    poem: `${intro}\n\n${body}\n\n${conclusion}`,
+    title: title,
+    poem: parts.join('\n\n'),
   };
 }
 
@@ -606,9 +981,16 @@ async function handleGenerate() {
   // 짧은 딜레이로 '생각하는 느낌'
   await new Promise((r) => setTimeout(r, 600 + Math.random() * 800));
 
-  const { category, poem } = generatePoem(input);
+  const { category, title, poem } = generatePoem(input);
 
   categoryLabel.textContent = category;
+  const poemTitle = document.getElementById('poemTitle');
+  if (title) {
+    poemTitle.textContent = title;
+    poemTitle.classList.remove('hidden');
+  } else {
+    poemTitle.classList.add('hidden');
+  }
   poemSection.classList.remove('hidden');
   poemSection.classList.add('fade-in');
   poemOutput.textContent = '';
@@ -637,8 +1019,10 @@ moodInput.addEventListener('keydown', (e) => {
 
 // ── 복사 버튼 ──
 copyBtn.addEventListener('click', async () => {
-  const text = poemOutput.textContent;
-  if (!text) return;
+  const titleEl = document.getElementById('poemTitle');
+  const titleText = titleEl && !titleEl.classList.contains('hidden') ? titleEl.textContent + '\n\n' : '';
+  const text = titleText + poemOutput.textContent;
+  if (!text.trim()) return;
   try {
     await navigator.clipboard.writeText(text);
     copyBtn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i>';
